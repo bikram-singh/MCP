@@ -1,0 +1,58 @@
+name: Add Two Numbers Calculator
+
+on:
+  workflow_dispatch:
+    inputs:
+      first_number:
+        description: 'Enter the first number'
+        required: true
+        type: number
+        default: '0'
+      second_number:
+        description: 'Enter the second number'
+        required: true
+        type: number
+        default: '0'
+
+jobs:
+  calculate-sum:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Display input numbers
+        run: |
+          echo "First number: ${{ github.event.inputs.first_number }}"
+          echo "Second number: ${{ github.event.inputs.second_number }}"
+      
+      - name: Calculate sum
+        run: |
+          first_num=${{ github.event.inputs.first_number }}
+          second_num=${{ github.event.inputs.second_number }}
+          sum=$((first_num + second_num))
+          echo "Calculation: $first_num + $second_num = $sum"
+          echo "SUM_RESULT=$sum" >> $GITHUB_ENV
+      
+      - name: Display result
+        run: |
+          echo "🧮 Addition Calculator Result 🧮"
+          echo "================================"
+          echo "First Number:  ${{ github.event.inputs.first_number }}"
+          echo "Second Number: ${{ github.event.inputs.second_number }}"
+          echo "Sum:           ${{ env.SUM_RESULT }}"
+          echo "================================"
+          echo "✅ Calculation completed successfully!"
+      
+      - name: Create result summary
+        run: |
+          echo "## 🧮 Addition Calculator Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Input | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| First Number | ${{ github.event.inputs.first_number }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Second Number | ${{ github.event.inputs.second_number }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Sum** | **${{ env.SUM_RESULT }}** |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎉 Calculation: ${{ github.event.inputs.first_number }} + ${{ github.event.inputs.second_number }} = ${{ env.SUM_RESULT }}"  >> $GITHUB_STEP_SUMMARY
